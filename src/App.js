@@ -44,6 +44,7 @@ import NotFound from "./component/layout/Not Found/NotFound.js";
 // import Unauthorized from "./component/layout/unAuthorized/unAuth.js";
 import { toast } from "react-toastify";
 
+//// Alll APP Route
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.user);
 
