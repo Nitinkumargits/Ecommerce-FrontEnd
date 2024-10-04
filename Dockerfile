@@ -1,29 +1,16 @@
-# Use official Node.js LTS image
-FROM node:18-alpine as build
+# Fetching the latest node image on alpine linux
+FROM node:alpine 
 
-# Set working directory
-WORKDIR /app
+# Setting up the work directory
+WORKDIR /react-app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Installing dependencies
+COPY ./package*.json /react-app
 
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the frontend code
+# Copying all the files in our project
 COPY . .
 
-# Build the frontend
-RUN npm run build
-
-# Serve the build using nginx
-FROM nginx:alpine
-
-# Copy build files to nginx
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Expose frontend port
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Starting our application
+CMD ["npm","start"]
