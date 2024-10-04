@@ -51,7 +51,9 @@ function App() {
 
   async function getStripeApiKey() {
     try {
-      const { data } = await axios.get("/api/v1/stripeapikey");
+      const { data } = await axios.get(
+        "https://ecommerce-api-nitin.ved.yt/api/v1/stripeapikey"
+      );
       setStripeApiKey(data.stripeApiKey);
     } catch (error) {
       toast.error(

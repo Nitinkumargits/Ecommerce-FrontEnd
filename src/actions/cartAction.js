@@ -8,7 +8,9 @@ import noimage from "../images/noimage.png";
 
 // Add to Cart
 export const addItemsToCart = (id, quantity) => async (dispatch, getState) => {
-  const { data } = await axios.get(`/api/v1/product/${id}`);
+  const { data } = await axios.get(
+    `https://ecommerce-api-nitin.ved.yt/api/v1/product/${id}`
+  );
 
   dispatch({
     type: ADD_TO_CART,

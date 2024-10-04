@@ -71,7 +71,7 @@ const Payment = () => {
       }
 
       const { data } = await axios.post(
-        "/api/v1/payment/process",
+        "https://ecommerce-api-nitin.ved.yt/api/v1/payment/process",
         paymentData,
         config
       );
