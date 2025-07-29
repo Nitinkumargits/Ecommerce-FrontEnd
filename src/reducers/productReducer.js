@@ -43,7 +43,6 @@ export const productsReducer = (state = { products: [] }, action) => {
         loading: true,
         products: [], // Reset products array when a request is made
       };
-
     case ALL_PRODUCT_SUCCESS:
       return {
         ...state, // Keep existing state properties
@@ -53,14 +52,12 @@ export const productsReducer = (state = { products: [] }, action) => {
         resultPerPage: action.payload.resultPerPage,
         filteredProductsCount: action.payload.filteredProductsCount,
       };
-
     case ADMIN_PRODUCT_SUCCESS:
       return {
         ...state, // Keep existing state properties
         loading: false,
         products: action.payload, // Store products array from payload
       };
-
     case ALL_PRODUCT_FAIL:
     case ADMIN_PRODUCT_FAIL:
       return {
@@ -68,7 +65,6 @@ export const productsReducer = (state = { products: [] }, action) => {
         loading: false,
         error: action.payload, // Store the error from payload
       };
-
     case CLEAR_ERRORS:
       return {
         ...state, // Keep existing state properties

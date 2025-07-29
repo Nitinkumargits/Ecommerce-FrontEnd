@@ -19,22 +19,30 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-// Import fallback image
 import noImage from "../../images/noimage.png";
 
 const ProductDetails = () => {
-  const { id } = useParams(); // Get the product id from the URL
+  const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const { isAuthenticated } = useSelector((state) => state.user);
 
   const { product, loading, error } = useSelector(
     (state) => state.productDetails
   );
-
   const { success, error: reviewError } = useSelector(
     (state) => state.newReview
   );
+
+  const [quantity, setQuantity] = useState(1);
+  const [previousTotal, setPreviousTotal] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+
+  const unitPrice = product?.price || 0;
+  const totalPrice = unitPrice * quantity;
 
   const options = {
     size: "large",
@@ -42,21 +50,15 @@ const ProductDetails = () => {
     readOnly: true,
     precision: 0.5,
   };
-  const [quantity, setQuantity] = useState(1);
-  const [open, setOpen] = useState(false);
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
 
   const increaseQuantity = () => {
     if (product.Stock <= quantity) return;
-
     const qty = quantity + 1;
     setQuantity(qty);
   };
 
   const decreaseQuantity = () => {
-    if (1 >= quantity) return;
-
+    if (quantity <= 1) return;
     const qty = quantity - 1;
     setQuantity(qty);
   };
@@ -66,9 +68,7 @@ const ProductDetails = () => {
     dispatch(addItemsToCart(id, quantity));
   };
 
-  const submitReviewToggle = () => {
-    open ? setOpen(false) : setOpen(true);
-  };
+  const submitReviewToggle = () => setOpen(!open);
 
   const reviewSubmitHandler = () => {
     if (!isAuthenticated) {
@@ -103,6 +103,13 @@ const ProductDetails = () => {
     dispatch(getProductDetails(id));
   }, [dispatch, id, error, success, reviewError]);
 
+  // Track previous total price when quantity changes
+  useEffect(() => {
+    if (product && product.price !== undefined) {
+      setPreviousTotal((prev) => (prev === totalPrice ? prev : totalPrice));
+    }
+  }, [quantity, product, totalPrice]);
+
   return (
     <Fragment>
       {loading ? (
@@ -110,6 +117,7 @@ const ProductDetails = () => {
       ) : (
         <Fragment>
           <MetaData title={`${product.name} -- ECOMMERCE`} />
+
           <div className="ProductDetails">
             <div>
               <Carousel>
@@ -122,16 +130,12 @@ const ProductDetails = () => {
                       alt={`${i} Slide`}
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = noImage; // Use imported fallback image
+                        e.target.src = noImage;
                       }}
                     />
                   ))
                 ) : (
-                  <img
-                    className="CarouselImage"
-                    src={noImage} // Fallback image when no images are available
-                    alt="Fallback Slide"
-                  />
+                  <img className="CarouselImage" src={noImage} alt="Fallback" />
                 )}
               </Carousel>
             </div>
@@ -141,14 +145,20 @@ const ProductDetails = () => {
                 <h2>{product.name}</h2>
                 <p>Product # {product._id}</p>
               </div>
+
               <div className="detailsBlock-2">
                 <Rating {...options} />
                 <span className="detailsBlock-2-span">
                   ({product.numOfReviews} Reviews)
                 </span>
               </div>
+
               <div className="detailsBlock-3">
-                <h1>{`₹${product.price}`}</h1>
+                <h1
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span>₹{totalPrice}</span>
+                </h1>
+
                 <div className="detailsBlock-3-1">
                   <div className="detailsBlock-3-1-1">
                     <button onClick={decreaseQuantity}>-</button>
@@ -161,6 +171,7 @@ const ProductDetails = () => {
                     Add to Cart
                   </button>
                 </div>
+
                 <p>
                   Status:
                   <b className={product.Stock < 1 ? "redColor" : "greenColor"}>
