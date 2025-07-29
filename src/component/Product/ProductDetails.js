@@ -70,17 +70,34 @@ const ProductDetails = () => {
 
   const submitReviewToggle = () => setOpen(!open);
 
+  // const reviewSubmitHandler = () => {
+  //   if (!isAuthenticated) {
+  //     toast.error("Please log in to submit a review.");
+  //     navigate("/login");
+  //   } else {
+  //     const myForm = new FormData();
+  //     myForm.set("rating", rating);
+  //     myForm.set("comment", comment);
+  //     myForm.set("productId", id);
+
+  //     console.log(myForm);
+
+  //     dispatch(newReview(myForm));
+  //     setOpen(false);
+  //   }
+  // };
   const reviewSubmitHandler = () => {
     if (!isAuthenticated) {
       toast.error("Please log in to submit a review.");
       navigate("/login");
     } else {
-      const myForm = new FormData();
-      myForm.set("rating", rating);
-      myForm.set("comment", comment);
-      myForm.set("productId", id);
+      const reviewPayload = {
+        rating,
+        comment,
+        productId: id,
+      };
 
-      dispatch(newReview(myForm));
+      dispatch(newReview(reviewPayload));
       setOpen(false);
     }
   };

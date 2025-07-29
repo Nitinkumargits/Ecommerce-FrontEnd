@@ -177,12 +177,12 @@
 
 .reviewCard {
   flex: none;
-
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.226);
   border: 1px solid rgba(56, 56, 56, 0.116);
-  width: 30vmax;
+  width: 20vmax;
   display: flex;
   flex-direction: column;
+  gap: 0.6vmax;
   align-items: center;
   margin: 1vmax;
   padding: 3vmax;
@@ -206,6 +206,13 @@
 }
 
 @media screen and (max-width: 600px) {
+  .CarouselImage {
+    width: 79%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .ProductDetails {
     flex-direction: column;
     height: unset;
@@ -287,6 +294,6 @@
     font: 600 3vw "Roboto";
   }
   .reviewCardComment {
-    font: 300 5vw cursive;
+    font: 300 3.5vw cursive;
   }
 }

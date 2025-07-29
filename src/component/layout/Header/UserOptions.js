@@ -6,11 +6,15 @@ import PersonIcon from "@mui/icons-material/Person";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import LoginIcon from "@mui/icons-material/Login";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { logout } from "../../../actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
 import profileImg from "../../../images/Profile.png";
+import HomeIcon from "@mui/icons-material/Home";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
+import ContactMailIcon from "@mui/icons-material/ContactMail";
 
 const UserOptions = ({ user }) => {
   const { cartItems } = useSelector((state) => state.cart);
@@ -18,84 +22,118 @@ const UserOptions = ({ user }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const options = [
-    { icon: <ListAltIcon />, name: "Orders", func: orders },
-    { icon: <PersonIcon />, name: "Profile", func: account },
+  const guestOptions = [
+    { icon: <HomeIcon />, name: "Home", func: () => navigate("/") },
+    {
+      icon: <LocalMallIcon />,
+      name: "Products",
+      func: () => navigate("/products"),
+    },
+    {
+      icon: <ContactMailIcon />,
+      name: "Contact",
+      func: () => navigate("/contact"),
+    },
     {
       icon: (
         <ShoppingCartIcon
           style={{ color: cartItems.length > 0 ? "tomato" : "unset" }}
         />
       ),
-      name: `Cart(${cartItems.length})`,
-      func: cart,
+      name: `Cart (${cartItems.length})`,
+      func: () => navigate("/cart"),
     },
-    { icon: <ExitToAppIcon />, name: "Logout", func: logoutUser },
+    {
+      icon: <LoginIcon />,
+      name: "Login",
+      func: () => navigate("/login"),
+    },
+  ];
+
+  const userOptions = [
+    { icon: <HomeIcon />, name: "Home", func: () => navigate("/") },
+    {
+      icon: <LocalMallIcon />,
+      name: "Products",
+      func: () => navigate("/products"),
+    },
+    {
+      icon: <ContactMailIcon />,
+      name: "Contact",
+      func: () => navigate("/contact"),
+    },
+    {
+      icon: <ListAltIcon />,
+      name: "Orders",
+      func: () => navigate("/orders"),
+    },
+
+    {
+      icon: <PersonIcon />,
+      name: "Profile",
+      func: () => navigate("/account"),
+    },
+    {
+      icon: (
+        <ShoppingCartIcon
+          style={{ color: cartItems.length > 0 ? "tomato" : "unset" }}
+        />
+      ),
+      name: `Cart (${cartItems.length})`,
+      func: () => navigate("/cart"),
+    },
+    {
+      icon: <ExitToAppIcon />,
+      name: "Logout",
+      func: () => {
+        dispatch(logout());
+        toast.success("Logged out successfully");
+        navigate("/");
+      },
+    },
   ];
 
   if (user && user.role === "admin") {
-    options.unshift({
+    userOptions.unshift({
       icon: <DashboardIcon />,
       name: "Dashboard",
-      func: dashboard,
+      func: () => navigate("/admin/dashboard"),
     });
-  }
-
-  function dashboard() {
-    navigate("/admin/dashboard");
-  }
-
-  function orders() {
-    navigate("/orders");
-  }
-
-  function account() {
-    navigate("/account");
-  }
-
-  function cart() {
-    navigate("/cart");
-  }
-
-  function logoutUser() {
-    dispatch(logout());
-    toast.success("Logout Successfully");
   }
 
   return (
     <Fragment>
-      <Backdrop open={open} style={{ zIndex: "10" }} />
+      <Backdrop open={open} style={{ zIndex: 10 }} />
       <SpeedDial
-        ariaLabel="SpeedDial tooltip example"
+        ariaLabel="SpeedDial User Options"
+        className="speedDial"
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}
-        style={{ zIndex: "11" }}
         open={open}
         direction="down"
-        className="speedDial"
+        style={{ zIndex: 11 }}
         icon={
           <img
-            src={user.avatar ? user?.avatar?.url : profileImg}
+            src={user?.avatar?.url || profileImg}
             alt="Profile"
             className="speedDialIcon"
-            loading="lazy"
             onError={(e) => {
-              e.target.onerror = null; // prevents infinite loop if fallback image fails
-              e.target.src = profileImg; // set fallback image (profile.png) on error
+              e.target.onerror = null;
+              e.target.src = profileImg;
             }}
           />
         }>
-        {options.map((item) => (
+        {(user ? userOptions : guestOptions).map((action) => (
           <SpeedDialAction
-            key={item.name} // Unique key for each action
-            icon={item.icon}
-            tooltipTitle={item.name}
-            onClick={item.func}
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+            onClick={action.func}
             tooltipOpen={window.innerWidth <= 600}
           />
         ))}
       </SpeedDial>
-      <ToastContainer />
+      <ToastContainer position="bottom-right" autoClose={2000} />
     </Fragment>
   );
 };

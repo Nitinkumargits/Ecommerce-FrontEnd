@@ -46,7 +46,7 @@ import { toast } from "react-toastify";
 
 //// Alll APP Route
 function App() {
-  const { isAuthenticated, user } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
 
   const [stripeApiKey, setStripeApiKey] = useState("");
 
@@ -77,7 +77,7 @@ function App() {
   return (
     <Router>
       <Header />
-      {isAuthenticated && <UserOptions user={user} />}
+      <UserOptions user={user} />
       <Routes>
         {/* Use Routes instead of directly using Route */}
         <Route path="/" element={<Home />} />

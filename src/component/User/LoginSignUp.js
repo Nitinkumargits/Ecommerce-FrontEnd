@@ -48,29 +48,6 @@ const LoginSignUp = () => {
       setUser({ ...user, [e.target.name]: e.target.value });
     }
   };
-
-  // const registerSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   const myForm = new FormData();
-  //   myForm.set("name", name);
-  //   myForm.set("email", email);
-  //   myForm.set("password", password);
-
-  //   // Append the avatar file if available
-  //   if (avatar) {
-  //     myForm.append("avatar", avatar); // Append the File object directly
-  //   } else {
-  //     console.error("No avatar selected");
-  //   }
-
-  //   // Log the FormData content for debugging
-  //   for (const pair of myForm.entries()) {
-  //     console.log(`${pair[0]}: ${pair[1]}`);
-  //   }
-
-  //   dispatch(register(myForm)); // Dispatch form data
-  // };
   const registerSubmit = (e) => {
     e.preventDefault();
 
