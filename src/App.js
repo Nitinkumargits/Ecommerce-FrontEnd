@@ -71,6 +71,7 @@ function App() {
     }
 
     store.dispatch(loadUser());
+
     getStripeApiKey();
   }, []);
 

@@ -7,7 +7,7 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import FaceIcon from "@mui/icons-material/Face";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, login, register } from "../../actions/userAction";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const LoginSignUp = () => {
   const dispatch = useDispatch();
@@ -84,6 +84,8 @@ const LoginSignUp = () => {
     if (avatar) {
       myForm.append("avatar", avatar);
     }
+
+    // console.log("loginSignup: ", myForm);
 
     dispatch(register(myForm)); // Dispatch form data to Redux action
   };
@@ -210,7 +212,6 @@ const LoginSignUp = () => {
               </form>
             </div>
           </div>
-          <ToastContainer />
         </Fragment>
       )}
     </Fragment>

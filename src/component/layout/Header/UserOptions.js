@@ -8,7 +8,6 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LoginIcon from "@mui/icons-material/Login";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
 import { logout } from "../../../actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
 import profileImg from "../../../images/Profile.png";
@@ -87,7 +86,6 @@ const UserOptions = ({ user }) => {
       name: "Logout",
       func: () => {
         dispatch(logout());
-        toast.success("Logged out successfully");
         navigate("/");
       },
     },
@@ -133,7 +131,6 @@ const UserOptions = ({ user }) => {
           />
         ))}
       </SpeedDial>
-      <ToastContainer position="bottom-right" autoClose={2000} />
     </Fragment>
   );
 };
