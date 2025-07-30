@@ -36,6 +36,7 @@ const ProductDetails = () => {
   );
 
   const [quantity, setQuantity] = useState(1);
+  // eslint-disable-next-line
   const [previousTotal, setPreviousTotal] = useState(null);
   const [open, setOpen] = useState(false);
   const [rating, setRating] = useState(0);
