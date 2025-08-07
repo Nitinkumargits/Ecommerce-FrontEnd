@@ -90,10 +90,15 @@ export const loadUser = () => async (dispatch) => {
 
     const { data } = await axios.get(
       `https://ecommerce-api-nitin.ved.yt/api/v1/me`
+      // { withCredentials: true } // ✅ this enables cookie
     );
+
+    console.log("loadUser-data action :", data);
 
     dispatch({ type: LOAD_USER_SUCCESS, payload: data.user });
   } catch (error) {
+    console.log("loadUser-data action :", error);
+
     dispatch({ type: LOAD_USER_FAIL, payload: error.response.data.message });
   }
 };

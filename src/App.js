@@ -50,6 +50,10 @@ function App() {
 
   const [stripeApiKey, setStripeApiKey] = useState("");
 
+  React.useEffect(() => {
+    store.dispatch(loadUser());
+  }, []);
+
   async function getStripeApiKey() {
     try {
       const { data } = await axios.get(
@@ -69,8 +73,6 @@ function App() {
       });
       window.WebFontLoaded = true;
     }
-
-    store.dispatch(loadUser());
 
     getStripeApiKey();
   }, []);

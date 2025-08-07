@@ -14,6 +14,7 @@ const Profile = () => {
     isAuthenticated,
     error,
   } = useSelector((state) => state.user);
+
   const navigate = useNavigate();
 
   useEffect(() => {
