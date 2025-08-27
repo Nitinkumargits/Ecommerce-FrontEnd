@@ -16,13 +16,6 @@ RUN npm ci --no-audit --no-fund || npm install --no-audit --no-fund
 ARG REACT_APP_API_BASE_URL
 ENV REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
 
-# Copy environment file generated in CI (contains REACT_APP_* variables)
-# This is required at build time for CRA-based apps
-COPY .env ./.env
-
-# If ARG provided and .env missing, create one so CRA picks it up
-RUN [ -f .env ] || [ -z "$REACT_APP_API_BASE_URL" ] || echo "REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}" > .env
-
 # Copy the rest of the frontend source
 COPY . ./
 
