@@ -9,6 +9,9 @@ COPY ./package*.json /react-app
 
 RUN npm install
 
+# Copy environment file generated in CI (contains REACT_APP_* variables)
+COPY .env ./.env
+
 # Copying all the files in our project
 COPY . .
 

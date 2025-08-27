@@ -5,6 +5,10 @@ import { Provider } from "react-redux";
 import store from "./store";
 import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+
+// Set a base URL from env; send credentials only per-request where needed
+axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL || "";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

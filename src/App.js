@@ -7,7 +7,7 @@ import Products from "./component/Product/Products.js";
 import Search from "./component/Product/Search";
 import LoginSignUp from "./component/User/LoginSignUp.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Updated import
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import webFont from "webfontloader";
 import store from "./store.js";
 import { loadUser } from "./actions/userAction.js";
@@ -43,6 +43,7 @@ import About from "./component/layout/About/About.js";
 import NotFound from "./component/layout/Not Found/NotFound.js";
 // import Unauthorized from "./component/layout/unAuthorized/unAuth.js";
 import { toast } from "react-toastify";
+import Loader from "./component/layout/Loader/Loader.js";
 
 //// Alll APP Route
 function App() {
@@ -52,13 +53,13 @@ function App() {
 
   React.useEffect(() => {
     store.dispatch(loadUser());
-  }, []);
+  }, [loadUser]);
 
   async function getStripeApiKey() {
     try {
-      const { data } = await axios.get(
-        "https://ecommerce-api-nitin.ved.yt/api/v1/stripeapikey"
-      );
+      const { data } = await axios.get("/api/v1/stripeapikey", {
+        withCredentials: true,
+      });
       setStripeApiKey(data.stripeApiKey);
     } catch (error) {
       toast.error(
@@ -74,8 +75,13 @@ function App() {
       window.WebFontLoaded = true;
     }
 
-    // getStripeApiKey();
+    getStripeApiKey();
   }, []);
+
+  const stripePromise = useMemo(
+    () => (stripeApiKey ? loadStripe(stripeApiKey) : null),
+    [stripeApiKey]
+  );
 
   return (
     <Router>
@@ -99,7 +105,7 @@ function App() {
           element={<ProtectedRoute isAdmin={false} element={<Profile />} />}
         />
         <Route
-          path="login/shipping"
+          path="/login/shipping"
           element={<ProtectedRoute isAdmin={false} element={<Shipping />} />}
         />
         <Route
@@ -180,11 +186,11 @@ function App() {
           path="/process/payment"
           element={
             stripeApiKey ? (
-              <Elements stripe={loadStripe(stripeApiKey)}>
+              <Elements stripe={stripePromise}>
                 <Payment />
               </Elements>
             ) : (
-              <NotFound />
+              <Loader />
             )
           }
         />

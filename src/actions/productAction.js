@@ -38,10 +38,10 @@ export const getProduct =
     try {
       dispatch({ type: ALL_PRODUCT_REQUEST });
 
-      let link = `https://ecommerce-api-nitin.ved.yt/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`;
+      let link = `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`;
 
       if (category) {
-        link = `https://ecommerce-api-nitin.ved.yt/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&category=${category}&ratings[gte]=${ratings}`;
+        link = `/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&category=${category}&ratings[gte]=${ratings}`;
       }
 
       const { data } = await axios.get(link);
@@ -53,7 +53,7 @@ export const getProduct =
     } catch (error) {
       dispatch({
         type: ALL_PRODUCT_FAIL,
-        payload: error.response.data.message,
+        payload: error.response?.data?.message || error.message,
       });
     }
   };
@@ -63,9 +63,9 @@ export const getAdminProduct = () => async (dispatch) => {
   try {
     dispatch({ type: ADMIN_PRODUCT_REQUEST });
 
-    const { data } = await axios.get(
-      "https://ecommerce-api-nitin.ved.yt/api/v1/admin/products"
-    );
+    const { data } = await axios.get("/api/v1/admin/products", {
+      withCredentials: true,
+    });
 
     dispatch({
       type: ADMIN_PRODUCT_SUCCESS,
@@ -74,7 +74,7 @@ export const getAdminProduct = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: ADMIN_PRODUCT_FAIL,
-      payload: error.response.data.message,
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
@@ -89,9 +89,9 @@ export const createProduct = (productData) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      `https://ecommerce-api-nitin.ved.yt/api/v1/admin/product/new`,
+      `/api/v1/admin/product/new`,
       productData,
-      config
+      { ...config, withCredentials: true }
     );
 
     dispatch({
@@ -101,7 +101,7 @@ export const createProduct = (productData) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: NEW_PRODUCT_FAIL,
-      payload: error.response.data.message,
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
@@ -116,9 +116,9 @@ export const updateProduct = (id, productData) => async (dispatch) => {
     };
 
     const { data } = await axios.put(
-      `https://ecommerce-api-nitin.ved.yt/api/v1/admin/product/${id}`,
+      `/api/v1/admin/product/${id}`,
       productData,
-      config
+      { ...config, withCredentials: true }
     );
 
     dispatch({
@@ -128,7 +128,7 @@ export const updateProduct = (id, productData) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: UPDATE_PRODUCT_FAIL,
-      payload: error.response.data.message,
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
@@ -138,9 +138,9 @@ export const deleteProduct = (id) => async (dispatch) => {
   try {
     dispatch({ type: DELETE_PRODUCT_REQUEST });
 
-    const { data } = await axios.delete(
-      `https://ecommerce-api-nitin.ved.yt/api/v1/admin/product/${id}`
-    );
+    const { data } = await axios.delete(`/api/v1/admin/product/${id}`, {
+      withCredentials: true,
+    });
 
     dispatch({
       type: DELETE_PRODUCT_SUCCESS,
@@ -149,7 +149,7 @@ export const deleteProduct = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: DELETE_PRODUCT_FAIL,
-      payload: error.response.data.message,
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
@@ -160,9 +160,7 @@ export const getProductDetails = (id) => async (dispatch) => {
     dispatch({ type: PRODUCT_DETAILS_REQUEST });
 
     // Make the API call to get product details
-    const { data } = await axios.get(
-      `https://ecommerce-api-nitin.ved.yt/api/v1/product/${id}`
-    );
+    const { data } = await axios.get(`/api/v1/product/${id}`);
 
     dispatch({
       type: PRODUCT_DETAILS_SUCCESS,
@@ -171,11 +169,7 @@ export const getProductDetails = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: PRODUCT_DETAILS_FAIL,
-      // Safely check for the error message, handle cases where response or data might be missing
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
@@ -189,11 +183,10 @@ export const newReview = (reviewData) => async (dispatch) => {
       headers: { "Content-Type": "application/json" },
     };
 
-    const { data } = await axios.put(
-      `https://ecommerce-api-nitin.ved.yt/api/v1/review`,
-      reviewData,
-      config
-    );
+    const { data } = await axios.put(`/api/v1/review`, reviewData, {
+      ...config,
+      withCredentials: true,
+    });
 
     dispatch({
       type: NEW_REVIEW_SUCCESS,
@@ -202,7 +195,7 @@ export const newReview = (reviewData) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: NEW_REVIEW_FAIL,
-      payload: error.response.data.message,
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
@@ -212,9 +205,9 @@ export const getAllReviews = (id) => async (dispatch) => {
   try {
     dispatch({ type: ALL_REVIEW_REQUEST });
 
-    const { data } = await axios.get(
-      `https://ecommerce-api-nitin.ved.yt/api/v1/reviews?id=${id}`
-    );
+    const { data } = await axios.get(`/api/v1/reviews?id=${id}`, {
+      withCredentials: true,
+    });
 
     dispatch({
       type: ALL_REVIEW_SUCCESS,
@@ -223,7 +216,7 @@ export const getAllReviews = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: ALL_REVIEW_FAIL,
-      payload: error.response.data.message,
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
@@ -234,7 +227,8 @@ export const deleteReviews = (reviewId, productId) => async (dispatch) => {
     dispatch({ type: DELETE_REVIEW_REQUEST });
 
     const { data } = await axios.delete(
-      `https://ecommerce-api-nitin.ved.yt/api/v1/reviews?id=${reviewId}&productId=${productId}`
+      `/api/v1/reviews?id=${reviewId}&productId=${productId}`,
+      { withCredentials: true }
     );
 
     dispatch({
@@ -244,7 +238,7 @@ export const deleteReviews = (reviewId, productId) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: DELETE_REVIEW_FAIL,
-      payload: error.response.data.message,
+      payload: error.response?.data?.message || error.message,
     });
   }
 };

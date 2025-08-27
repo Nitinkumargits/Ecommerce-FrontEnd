@@ -23,7 +23,8 @@ import { toast } from "react-toastify";
 import noimage from "../../images/noimage.png";
 
 const Payment = () => {
-  const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
+  const orderInfoRaw = sessionStorage.getItem("orderInfo");
+  const orderInfo = orderInfoRaw ? JSON.parse(orderInfoRaw) : null;
 
   const dispatch = useDispatch();
   const stripe = useStripe();
@@ -36,11 +37,12 @@ const Payment = () => {
   const { error } = useSelector((state) => state.newOrder);
 
   const paymentData = {
-    amount: Math.round(orderInfo.totalPrice * 100),
+    amount: orderInfo ? Math.round(orderInfo.totalPrice * 100) : 0,
   };
 
   // Use useMemo to memoize the order object
   const order = useMemo(() => {
+    if (!orderInfo) return null;
     return {
       shippingInfo,
       orderItems: cartItems.map((item) => ({
@@ -61,6 +63,7 @@ const Payment = () => {
     try {
       const config = {
         headers: { "Content-Type": "application/json" },
+        withCredentials: true,
       };
 
       // Ensure the order total is set before proceeding
@@ -71,7 +74,7 @@ const Payment = () => {
       }
 
       const { data } = await axios.post(
-        "https://ecommerce-api-nitin.ved.yt/api/v1/payment/process",
+        "/api/v1/payment/process",
         paymentData,
         config
       );
@@ -150,7 +153,7 @@ const Payment = () => {
 
           <input
             type="submit"
-            value={`Pay - ₹${orderInfo && orderInfo.totalPrice}`}
+            value={`Pay - ₹${orderInfo ? orderInfo.totalPrice : 0}`}
             ref={payBtn}
             className="paymentFormBtn"
           />

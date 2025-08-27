@@ -2,15 +2,14 @@ import {
   ADD_TO_CART,
   REMOVE_CART_ITEM,
   SAVE_SHIPPING_INFO,
+  CLEAR_CART,
 } from "../constants/cartConstants";
 import axios from "axios";
 import noimage from "../images/noimage.png";
 
 // Add to Cart
 export const addItemsToCart = (id, quantity) => async (dispatch, getState) => {
-  const { data } = await axios.get(
-    `https://ecommerce-api-nitin.ved.yt/api/v1/product/${id}`
-  );
+  const { data } = await axios.get(`/api/v1/product/${id}`);
 
   dispatch({
     type: ADD_TO_CART,
@@ -45,4 +44,10 @@ export const saveShippingInfo = (data) => async (dispatch) => {
   });
 
   localStorage.setItem("shippingInfo", JSON.stringify(data));
+};
+
+// CLEAR CART (e.g., on logout)
+export const clearCart = () => async (dispatch) => {
+  dispatch({ type: CLEAR_CART });
+  localStorage.removeItem("cartItems");
 };
