@@ -83,23 +83,28 @@ export const register = (userData) => async (dispatch) => {
   }
 };
 
-// Load User
+// // Load User
 export const loadUser = () => async (dispatch) => {
   try {
     dispatch({ type: LOAD_USER_REQUEST });
 
-    const { data } = await axios.get(
-      `https://ecommerce-api-nitin.ved.yt/api/v1/me`
-      // { withCredentials: true } // ✅ this enables cookie
+    // const { data } = await axios.get(
+    //   `https://ecommerce-api-nitin.ved.yt/api/v1/me`
+    // );
+    const { data } = await fetch(
+      "https://ecommerce-api-nitin.ved.yt/api/v1/me",
+      {
+        method: "GET",
+        credentials: "include",
+      }
     );
-
-    console.log("loadUser-data action :", data);
+    console.log("loadUser-data [userAction /data-success] :", data);
 
     dispatch({ type: LOAD_USER_SUCCESS, payload: data.user });
   } catch (error) {
-    console.log("loadUser-data action :", error);
+    console.log("loadUser-data [userAction /error]  :", error);
 
-    dispatch({ type: LOAD_USER_FAIL, payload: error.response.data.message });
+    dispatch({ type: LOAD_USER_FAIL, payload: error.response });
   }
 };
 

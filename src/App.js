@@ -74,7 +74,7 @@ function App() {
       window.WebFontLoaded = true;
     }
 
-    getStripeApiKey();
+    // getStripeApiKey();
   }, []);
 
   return (
