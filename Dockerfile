@@ -1,19 +1,45 @@
-# Fetching the latest node image on alpine linux
-FROM node:alpine 
+##############
+# Build stage #
+##############
+FROM node:22-alpine AS build
 
-# Setting up the work directory
-WORKDIR /react-app
+# Work inside /app for the frontend
+WORKDIR /app
 
-# Installing dependencies
-COPY ./package*.json /react-app
+# Copy only package manifests first to leverage Docker layer caching
+COPY Ecommerce-Frontend/package*.json ./
 
-RUN npm install
+# Install dependencies (prefer ci when lockfile is present, fallback to install)
+RUN npm ci --no-audit --no-fund || npm install --no-audit --no-fund
+
+# Optional build-time API base URL; if provided and .env isn't copied, we'll create it
+ARG REACT_APP_API_BASE_URL
+ENV REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
 
 # Copy environment file generated in CI (contains REACT_APP_* variables)
+# This is required at build time for CRA-based apps
 COPY .env ./.env
 
-# Copying all the files in our project
-COPY . .
+# If ARG provided and .env missing, create one so CRA picks it up
+RUN [ -f .env ] || [ -z "$REACT_APP_API_BASE_URL" ] || echo "REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}" > .env
 
-# Starting our application
-CMD ["npm","start"]
+# Copy the rest of the frontend source
+COPY Ecommerce-Frontend/ ./
+
+# Build static assets
+RUN npm run build
+
+################
+# Runtime stage #
+################
+FROM nginx:1.27-alpine AS production
+
+# Replace default nginx site with SPA-friendly config
+RUN rm -f /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy build artifacts to nginx html directory
+COPY --from=build /app/build /usr/share/nginx/html
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
