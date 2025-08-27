@@ -7,7 +7,7 @@ FROM node:22-alpine AS build
 WORKDIR /app
 
 # Copy only package manifests first to leverage Docker layer caching
-COPY Ecommerce-Frontend/package*.json ./
+COPY package*.json ./
 
 # Install dependencies (prefer ci when lockfile is present, fallback to install)
 RUN npm ci --no-audit --no-fund || npm install --no-audit --no-fund
@@ -24,7 +24,7 @@ COPY .env ./.env
 RUN [ -f .env ] || [ -z "$REACT_APP_API_BASE_URL" ] || echo "REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}" > .env
 
 # Copy the rest of the frontend source
-COPY Ecommerce-Frontend/ ./
+COPY . ./
 
 # Build static assets
 RUN npm run build
