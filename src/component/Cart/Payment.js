@@ -18,6 +18,7 @@ import EventIcon from "@mui/icons-material/Event";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 
 import { createOrder, clearErrors } from "../../actions/orderAction";
+import { clearCart } from "../../actions/cartAction";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import noimage from "../../images/noimage.png";
@@ -106,14 +107,14 @@ const Payment = () => {
         payBtn.current.disabled = false;
         toast.error(result.error.message);
       } else if (result.paymentIntent.status === "succeeded") {
-        // Proceed with order creation
         order.paymentInfo = {
           id: result.paymentIntent.id,
           status: result.paymentIntent.status,
         };
-        toast.success("Payment successfull.");
-        dispatch(createOrder(order));
-        toast.success("Your order is Placed !");
+        await dispatch(createOrder(order));
+        dispatch(clearCart());
+        sessionStorage.removeItem("orderInfo");
+        toast.success("Payment successful. Your order is placed!");
         navigate("/success");
       } else {
         toast.error("Payment was not successful.");
