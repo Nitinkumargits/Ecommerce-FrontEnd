@@ -11,6 +11,7 @@ import { addItemsToCart } from "../../actions/cartAction";
 import { useNavigate, useParams } from "react-router-dom";
 import MetaData from "../layout/MetaData";
 import { toast } from "react-toastify";
+import { NEW_REVIEW_RESET } from "../../constants/productConstants";
 import Loader from "../layout/Loader/Loader";
 import ReviewCard from "./ReviewCard";
 import Rating from "@mui/material/Rating";
@@ -116,6 +117,7 @@ const ProductDetails = () => {
 
     if (success) {
       toast.success("Review Submitted Successfully");
+      dispatch({ type: NEW_REVIEW_RESET });
     }
 
     dispatch(getProductDetails(id));
