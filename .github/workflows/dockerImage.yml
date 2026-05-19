@@ -34,4 +34,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            REACT_APP_API_BASE_URL=https://ecommerce-api-nitin.ved.yt/
+            REACT_APP_API_BASE_URL=/api
+
+      - name: Notify deploy repo
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DEPLOY_DISPATCH_PAT }}
+          repository: Nitinkumargits/-Ecommerce-Terraform
+          event-type: frontend-image-pushed
