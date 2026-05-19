@@ -7,8 +7,11 @@ import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
-// Set a base URL from env; send credentials only per-request where needed
+// API base URL: pulled from env so the same build works for any deployment.
+// Leave blank to use the CRA dev proxy from package.json.
 axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL || "";
+// Send the JWT httpOnly cookie on every cross-origin request.
+axios.defaults.withCredentials = true;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

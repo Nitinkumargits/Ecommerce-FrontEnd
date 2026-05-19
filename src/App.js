@@ -53,7 +53,7 @@ function App() {
 
   React.useEffect(() => {
     store.dispatch(loadUser());
-  }, [loadUser]);
+  }, []);
 
   async function getStripeApiKey() {
     try {
