@@ -52,19 +52,17 @@ const UpdateProfile = () => {
 
   const updateProfileDataChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      if (file.size > 2000000) {
-        // Example: 2MB size limit
-        const reader = new FileReader();
-        reader.onload = () => {
-          setAvatarPreview(reader.result);
-          setAvatar(file); // Set the file itself
-        };
-        reader.readAsDataURL(file);
-      } else {
-        toast.error("File size should be less than 2MB.");
-      }
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size should be less than 10MB.");
+      return;
     }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setAvatarPreview(reader.result);
+      setAvatar(file);
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
