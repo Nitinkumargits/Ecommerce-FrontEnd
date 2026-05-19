@@ -48,34 +48,36 @@ const OrderList = () => {
   }, [dispatch, error, deleteError, navigate, isDeleted]);
 
   const columns = [
-    { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },
+    { field: "id", headerName: "Order ID", minWidth: 110, flex: 1.2 },
+    { field: "customer", headerName: "Customer", minWidth: 110, flex: 1 },
+    { field: "products", headerName: "Products", minWidth: 140, flex: 1.4 },
     {
       field: "status",
       headerName: "Status",
-      minWidth: 150,
-      flex: 0.5,
+      minWidth: 90,
+      flex: 0.6,
       cellClassName: (params) =>
         params.row.status === "Delivered" ? "greenColor" : "redColor",
     },
     {
       field: "itemsQty",
-      headerName: "Items Qty",
+      headerName: "Qty",
       type: "number",
-      minWidth: 150,
+      minWidth: 70,
       flex: 0.4,
     },
     {
       field: "amount",
       headerName: "Amount",
       type: "number",
-      minWidth: 270,
-      flex: 0.5,
+      minWidth: 90,
+      flex: 0.6,
     },
     {
       field: "actions",
-      flex: 0.3,
+      flex: 0.5,
       headerName: "Actions",
-      minWidth: 150,
+      minWidth: 90,
       sortable: false,
       renderCell: (params) => (
         <Fragment>
@@ -93,6 +95,9 @@ const OrderList = () => {
   const rows = orders
     ? orders.map((item) => ({
         id: item._id,
+        customer: item.user?.name || "—",
+        products:
+          item.orderItems?.map((oi) => oi.name).join(", ") || "—",
         itemsQty: item.orderItems.length,
         amount: item.totalPrice,
         status: item.orderStatus,
@@ -109,8 +114,12 @@ const OrderList = () => {
           <DataGrid
             rows={rows}
             columns={columns}
-            pageSize={10}
-            disableSelectionOnClick
+            initialState={{
+              pagination: { paginationModel: { pageSize: 10, page: 0 } },
+            }}
+            pageSizeOptions={[10, 25, 50, 100]}
+            disableRowSelectionOnClick
+            getRowHeight={() => "auto"}
             className="productListTable"
             autoHeight
           />
