@@ -21,11 +21,20 @@ const categories = [
   "SmartPhones",
 ];
 
+const DEFAULT_PRICE = [0, 25000];
+const PRICE_MIN = 0;
+const PRICE_MAX = 25000;
+
 const Products = () => {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const [price, setPrice] = useState([0, 25000]);
+
+  // priceDraft tracks the slider position while dragging; price is the committed
+  // value that actually triggers the API call.
+  const [priceDraft, setPriceDraft] = useState(DEFAULT_PRICE);
+  const [price, setPrice] = useState(DEFAULT_PRICE);
   const [category, setCategory] = useState("");
+  const [ratingsDraft, setRatingsDraft] = useState(0);
   const [ratings, setRatings] = useState(0);
 
   const { keyword } = useParams();
@@ -38,20 +47,44 @@ const Products = () => {
     filteredProductsCount,
   } = useSelector((state) => state.products);
 
-  const setCurrentPageNo = (e) => {
-    setCurrentPage(e);
+  const setCurrentPageNo = (e) => setCurrentPage(e);
+
+  const selectCategory = (c) => {
+    setCategory((prev) => (prev === c ? "" : c)); // toggle off if clicked again
+    setCurrentPage(1);
   };
 
-  const priceHandler = (event, newPrice) => {
+  const commitPrice = (event, newPrice) => {
     setPrice(newPrice);
+    setCurrentPage(1);
   };
+
+  const commitRatings = (event, newRating) => {
+    setRatings(newRating);
+    setCurrentPage(1);
+  };
+
+  const clearFilters = () => {
+    setPriceDraft(DEFAULT_PRICE);
+    setPrice(DEFAULT_PRICE);
+    setCategory("");
+    setRatingsDraft(0);
+    setRatings(0);
+    setCurrentPage(1);
+  };
+
+  const hasActiveFilters =
+    category !== "" ||
+    ratings !== 0 ||
+    price[0] !== DEFAULT_PRICE[0] ||
+    price[1] !== DEFAULT_PRICE[1];
 
   useEffect(() => {
     if (error) {
       toast.error(error, {
-        closeButton: true, // Enable the close button
-        closeOnClick: true, // Allow toast to close on click
-        autoClose: 5000, // Auto close after 5 seconds (optional)
+        closeButton: true,
+        closeOnClick: true,
+        autoClose: 5000,
       });
       dispatch(clearErrors());
     }
@@ -78,24 +111,38 @@ const Products = () => {
           </div>
 
           <div className="filterBox">
+            <div className="filterHeader">
+              <Typography>Filters</Typography>
+              <button
+                type="button"
+                className="clearFiltersBtn"
+                onClick={clearFilters}
+                disabled={!hasActiveFilters}>
+                Clear
+              </button>
+            </div>
+
             <Typography>Price</Typography>
             <Slider
-              value={price}
-              onChange={priceHandler}
+              value={priceDraft}
+              onChange={(e, v) => setPriceDraft(v)}
+              onChangeCommitted={commitPrice}
               valueLabelDisplay="auto"
               aria-labelledby="range-slider"
-              min={0}
-              max={25000}
+              min={PRICE_MIN}
+              max={PRICE_MAX}
             />
 
             <Typography>Categories</Typography>
             <ul className="categoryBox">
-              {categories.map((category) => (
+              {categories.map((c) => (
                 <li
-                  className="category-link"
-                  key={category}
-                  onClick={() => setCategory(category)}>
-                  {category}
+                  className={
+                    "category-link" + (category === c ? " category-active" : "")
+                  }
+                  key={c}
+                  onClick={() => selectCategory(c)}>
+                  {c}
                 </li>
               ))}
             </ul>
@@ -103,10 +150,9 @@ const Products = () => {
             <fieldset>
               <Typography component="legend">Ratings Above</Typography>
               <Slider
-                value={ratings}
-                onChange={(e, newRating) => {
-                  setRatings(newRating);
-                }}
+                value={ratingsDraft}
+                onChange={(e, v) => setRatingsDraft(v)}
+                onChangeCommitted={commitRatings}
                 aria-labelledby="continuous-slider"
                 valueLabelDisplay="auto"
                 min={0}
