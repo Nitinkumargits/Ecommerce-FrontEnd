@@ -69,7 +69,7 @@ const NewProduct = () => {
     myForm.set("category", category);
     myForm.set("Stock", Stock);
 
-    imagesPreview.forEach((image) => {
+    images.forEach((image) => {
       myForm.append("images", image);
     });
 
