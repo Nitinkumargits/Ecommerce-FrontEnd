@@ -21,9 +21,9 @@ const categories = [
   "SmartPhones",
 ];
 
-const DEFAULT_PRICE = [0, 25000];
 const PRICE_MIN = 0;
-const PRICE_MAX = 25000;
+const PRICE_MAX = 300000;
+const DEFAULT_PRICE = [PRICE_MIN, PRICE_MAX];
 
 const Products = () => {
   const dispatch = useDispatch();
